@@ -17,61 +17,81 @@ class imgToASCII{
     // -h for help
     // -f followed by a filepath
     // -c for colorized, currently unavailable
-    String readpath;
-    String writepath;
+    String readpath = "";
+    String writepath = "";
+    boolean ERROR = false;
     boolean resize = false;
     int scaleH = 1;
     int scaleW = 1;
     char[][] chars;
-        if(args.length == 0) System.out.println("Use -h for help.");
-        for(int i = 0; i < args.length; i++){
-            if(args[i].equals("-h")) {
-                System.out.println("Use -f [filepath] to convert an image into ASCII.");
-                System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
-                System.out.println("Optionally add -m to display lambda instead of ASCII characters.");
+    if(args.length == 0) System.out.println("Use -h for help.");
+
+    for(int i = 0; i < args.length; i++){
+        switch (args[i]){
+            case "-h":
+            System.out.println("Use -f [filepath] to convert an image into ASCII.");
+            System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
+            break;
+            case "-f":
+            if(args.length < i+2){
+                System.out.println("ERROR: Please provide a filepath!");
+                ERROR = true;
+                continue;
             }
+            if(ERROR == false){
+            readpath = args[i+1];
+            writepath = setWritepath(readpath);
+            System.out.println("Filepath set.");
+            break;
+            }
+            case "-s":
+            if(args.length < i+2){
+                System.out.println("ERROR: Please select a scale when using -s!");
+                System.out.println("Conversion cancelled.");
+                continue;
+            }
+            System.out.println("Setting scaling");
+            try{
+                scaleH = Integer.parseInt(args[i+1]);
+            } catch(NumberFormatException e){
+                System.out.print("ERROR: Cannot convert a scaling of String to int");
+            }
+            try{
+                scaleW = Integer.parseInt(args[i+2]);
+            } catch(NumberFormatException e){
+                System.out.print("ERROR: Cannot convert a scaling of String to int");
+            }
+            resize = true;
+            break;
+        }
 
-            if(args[i].equals("-f")){
-                if(i == args.length -1){
-                    System.out.println("ERROR: Please provide a filepath!");
-                    continue;
-                }
-                readpath = args[++i];
-                writepath = setWritepath(readpath);
-                System.out.println("Filepath set.");
-                if(i+1 < args.length){             
-                    if(args[++i].equals("-s")){
-                        System.out.println("Setting scaling");
-                        if(args.length < i + 2){
-                        System.out.println("ERROR: Please select a scale when using -s!");
-                        System.out.println("Conversion cancelled.");
-                        continue; 
+    }
+                if(ERROR == false){
+                if(resize == false){
+                    try{
+                        chars = readFile(readpath, defaultHeightDivisor, defaultWidthDivisor);
+                    } catch(NullPointerException e){
+                        System.out.println("ERROR: Could not read file! Most likely do to a wrong filepath.");
+                        return;
                     }
-
-                        else{
-                            if(args.length < i+3){
-                                System.out.println("ERROR: Please provide both arguments for -s!");
-                                System.out.println("Conversion cancelled.");
-                                continue;
-                            }
-                            scaleH = Integer.parseInt(args[++i]);
-                            System.out.println("Heightscaling = " + scaleH);
-                            scaleW = Integer.parseInt(args[i+1]);
-                            System.out.println("Widthscaling = " + scaleW);
-                            resize = true;
-                        }
+                } 
+                else{
+                    try{
+                        chars = readFile(readpath, scaleH, scaleW);
+                    } catch(NullPointerException e){
+                        System.out.println("ERROR: Could not read file! Most likely do to a wrong filepath.");
+                        return;
                     }
-                }
-                if(resize == false) chars = readFile(readpath, defaultHeightDivisor, defaultWidthDivisor);
-                else chars = readFile(readpath, scaleH, scaleW);
+                } 
                 try{
                     writeToFile(writepath, chars);
                 } catch(IOException e){
                     System.out.println("Something went wrong.");
                     System.out.println("If this keeps happening please contact the author of this program.");
+                    return;
                 }
             }
-        }
+
     }
 
     static String setWritepath(String readpath){
@@ -87,7 +107,7 @@ class imgToASCII{
         return newPath;
     }
 
-    static char[][] readFile(String filepath, int heightDivisor, int widthDivisor){
+    static char[][] readFile(String filepath, int heightDivisor, int widthDivisor) throws NullPointerException{
         System.out.println("Converting.");
         BufferedImage image = null;
             try {
