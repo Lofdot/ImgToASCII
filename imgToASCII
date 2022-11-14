@@ -19,6 +19,7 @@ class imgToASCII{
     // -c for colorized, currently unavailable
     String readpath = "";
     String writepath = "";
+    boolean file = false;
     boolean ERROR = false;
     boolean resize = false;
     int scaleH = 1;
@@ -39,6 +40,7 @@ class imgToASCII{
                 continue;
             }
             if(ERROR == false){
+            file = true;
             readpath = args[i+1];
             writepath = setWritepath(readpath);
             System.out.println("Filepath set.");
@@ -66,7 +68,7 @@ class imgToASCII{
         }
 
     }
-                if(ERROR == false){
+                if((ERROR == false && args.length < 0) || (ERROR == false && file == true)){
                 if(resize == false){
                     try{
                         chars = readFile(readpath, defaultHeightDivisor, defaultWidthDivisor);
