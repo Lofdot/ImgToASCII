@@ -52,20 +52,20 @@ class imgToASCII{
                 System.out.println("Conversion cancelled.");
                 continue;
             }
-            System.out.println("Setting scaling");
+            System.out.println("Setting scaling.");
             try{
                 scaleH = Integer.parseInt(args[i+1]);
                 if(scaleH == 0) scaleH = 1;
                 if(scaleH < 0) scaleH = scaleH * -1;
             } catch(NumberFormatException e){
-                System.out.print("ERROR: Cannot convert a scaling of String to int");
+                System.out.print("ERROR: Cannot convert a scaling of String to int.");
             }
             try{
                 scaleW = Integer.parseInt(args[i+2]);
                 if(scaleW == 0) scaleW = 1;
                 if(scaleW < 0) scaleW = scaleW * -1;
             } catch(NumberFormatException e){
-                System.out.print("ERROR: Cannot convert a scaling of String to int");
+                System.out.print("ERROR: Cannot convert a scaling of String to int.");
             }
             resize = true;
             break;
@@ -136,7 +136,7 @@ class imgToASCII{
             try {
                 image = ImageIO.read(new File(filepath));
                 } catch (IOException e) {
-                    System.out.println("ERROR: Incorrect filepath or corrupted file");
+                    System.out.println("ERROR: Incorrect filepath or corrupted file!");
                     }
                 int height = image.getHeight() / heightDivisor;
                 int width = image.getWidth() / widthDivisor;
