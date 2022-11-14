@@ -8,14 +8,12 @@ import javax.imageio.ImageIO;
 
 class imgToASCII{
 
-    static final String DENSITY = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,^`'.";
+    static String DENSITY = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,^`'.";
+    static String monad = " λ";
     static final int defaultHeightDivisor = 1;
     static final int defaultWidthDivisor = 1;
 
     public static void main(String[] args){
-    // List of Arguments:
-    // -h for help
-    // -f followed by a filepath
     String readpath = "";
     String writepath = "";
     boolean file = false;
@@ -31,6 +29,7 @@ class imgToASCII{
             case "-h":
             System.out.println("Use -f [filepath] to convert an image into ASCII.");
             System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
+            System.out.println("Optionally add -m to change the charset to lambda.");
             break;
             case "-f":
             if(args.length < i+2){
@@ -67,6 +66,10 @@ class imgToASCII{
                 System.out.print("ERROR: Cannot convert a scaling of String to int");
             }
             resize = true;
+            break;
+            case "-m":
+            System.out.println("Changing charset");
+            DENSITY = monad;
             break;
         }
 
