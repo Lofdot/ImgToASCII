@@ -68,7 +68,7 @@ class imgToASCII{
             resize = true;
             break;
             case "-m":
-            System.out.println("Changing charset");
+            System.out.println("Changing charset.");
             DENSITY = monad;
             break;
         }
