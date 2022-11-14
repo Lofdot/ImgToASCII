@@ -1,0 +1,138 @@
+#!/usr/lib/jvm/java-19-openjdk-bin/bin/java --source 19
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.awt.Color;
+import javax.imageio.ImageIO;
+
+class imgToASCII{
+
+    static final String DENSITY = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,^`'.";
+    static final int defaultHeightDivisor = 1;
+    static final int defaultWidthDivisor = 1;
+
+    public static void main(String[] args){
+    // List of Arguments:
+    // -h for help
+    // -f followed by a filepath
+    // -c for colorized, currently unavailable
+    String readpath;
+    String writepath;
+    boolean resize = false;
+    int scaleH = 1;
+    int scaleW = 1;
+    char[][] chars;
+        if(args.length == 0) System.out.println("Use -h for help.");
+        for(int i = 0; i < args.length; i++){
+            if(args[i].equals("-h")) {
+                System.out.println("Use -f [filepath] to convert an image into ASCII.");
+                System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
+                System.out.println("Optionally add -m to display lambda instead of ASCII characters.");
+            }
+
+            if(args[i].equals("-f")){
+                if(i == args.length -1){
+                    System.out.println("ERROR: Please provide a filepath!");
+                    continue;
+                }
+                readpath = args[++i];
+                writepath = setWritepath(readpath);
+                System.out.println("Filepath set.");
+                if(i+1 < args.length){             
+                    if(args[++i].equals("-s")){
+                        System.out.println("Setting scaling");
+                        if(args.length < i + 2){
+                        System.out.println("ERROR: Please select a scale when using -s!");
+                        System.out.println("Conversion cancelled.");
+                        continue; 
+                    }
+
+                        else{
+                            if(args.length < i+3){
+                                System.out.println("ERROR: Please provide both arguments for -s!");
+                                System.out.println("Conversion cancelled.");
+                                continue;
+                            }
+                            scaleH = Integer.parseInt(args[++i]);
+                            System.out.println("Heightscaling = " + scaleH);
+                            scaleW = Integer.parseInt(args[i+1]);
+                            System.out.println("Widthscaling = " + scaleW);
+                            resize = true;
+                        }
+                    }
+                }
+                if(resize == false) chars = readFile(readpath, defaultHeightDivisor, defaultWidthDivisor);
+                else chars = readFile(readpath, scaleH, scaleW);
+                try{
+                    writeToFile(writepath, chars);
+                } catch(IOException e){
+                    System.out.println("Something went wrong.");
+                    System.out.println("If this keeps happening please contact the author of this program.");
+                }
+            }
+        }
+    }
+
+    static String setWritepath(String readpath){
+        char[] rPath = readpath.toCharArray();
+        String newPath = "";
+        for(int i = 0; i < rPath.length; i++){
+            if(rPath[i] == '.'){
+                newPath += ".txt";
+                i = rPath.length;
+            }
+            else newPath += rPath[i];
+        }
+        return newPath;
+    }
+
+    static char[][] readFile(String filepath, int heightDivisor, int widthDivisor){
+        System.out.println("Converting.");
+        BufferedImage image = null;
+            try {
+                image = ImageIO.read(new File(filepath));
+                } catch (IOException e) {
+                    System.out.println("ERROR: Incorrect filepath or corrupted file");
+                    }
+                int height = image.getHeight() / heightDivisor;
+                int width = image.getWidth() / widthDivisor;
+                 char[][] chars = new char[height][width];
+                 for (int i = 0; i < height; i++) {
+                     for (int j = 0; j < width; j++) {
+                      // Scaling image and accumulating colors
+                          int colorRGB = 0;
+                     for (int k = 0; k < heightDivisor; k++)
+                       for (int p = 0; p < widthDivisor; p++)
+                            colorRGB += image.getRGB(j * widthDivisor + p, i * heightDivisor + k);
+                            // Get the average color
+                             Color color = new Color(colorRGB / (heightDivisor * widthDivisor));
+                            // Read the R, G, B values of the color and get the average brightness
+                            int brightness = (color.getRed() + color.getGreen() + color.getBlue()) / 3;
+                            // Get a character depending on the brightness value
+                             chars[i][j] = getDensity(brightness);
+                         }
+                    }
+            return chars;
+        }
+    
+    // Returns the one ASCII character
+    static char getDensity(int value) {
+    int charValue = (int) Math.round(DENSITY.length() / 255.0 * value);
+    charValue = Math.max(charValue, 0);
+    charValue = Math.min(charValue, DENSITY.length() - 1);
+    return DENSITY.charAt(charValue);
+    }
+
+    static void writeToFile(String path, char[][] chars) throws IOException{
+        FileWriter writer = new FileWriter(path);
+            for (char[] row : chars) {
+            String str = String.valueOf(row);
+            writer.append(str).write("\n");
+            }
+        writer.flush();
+        writer.close();
+        System.out.println("Done.");
+    }
+
+}
