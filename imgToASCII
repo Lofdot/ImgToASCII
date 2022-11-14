@@ -17,6 +17,7 @@ class imgToASCII{
     String readpath = "";
     String writepath = "";
     boolean file = false;
+    boolean destination = true;
     boolean ERROR = false;
     boolean resize = false;
     int scaleH = 1;
@@ -29,6 +30,7 @@ class imgToASCII{
             case "-h":
             System.out.println("Use -f [filepath] to convert an image into ASCII.");
             System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
+            System.out.println("Optionally add -p [filepath] to save the ASCII art at your desired destination (Automatically adds .txt file extension).");
             System.out.println("Optionally add -m to change the charset to lambda.");
             break;
             case "-f":
@@ -71,8 +73,21 @@ class imgToASCII{
             System.out.println("Changing charset.");
             DENSITY = monad;
             break;
+            case "-p":
+                if(args.length < i+2){
+                System.out.println("ERROR: Please provide a filepath!");
+                ERROR = true;
+                continue;
+            }
+            if(ERROR == false){
+            destination = true;
+            writepath = args[i+1];
+            writepath += ".txt";
+            System.out.println("Writepath set.");
+            break;
+            }
+            
         }
-
     }
                 if((ERROR == false && args.length < 0) || (ERROR == false && file == true)){
                 if(resize == false){
