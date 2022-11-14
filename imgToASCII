@@ -16,7 +16,6 @@ class imgToASCII{
     // List of Arguments:
     // -h for help
     // -f followed by a filepath
-    // -c for colorized, currently unavailable
     String readpath = "";
     String writepath = "";
     boolean file = false;
@@ -55,11 +54,15 @@ class imgToASCII{
             System.out.println("Setting scaling");
             try{
                 scaleH = Integer.parseInt(args[i+1]);
+                if(scaleH == 0) scaleH = 1;
+                if(scaleH < 0) scaleH = scaleH * -1;
             } catch(NumberFormatException e){
                 System.out.print("ERROR: Cannot convert a scaling of String to int");
             }
             try{
                 scaleW = Integer.parseInt(args[i+2]);
+                if(scaleW == 0) scaleW = 1;
+                if(scaleW < 0) scaleW = scaleW * -1;
             } catch(NumberFormatException e){
                 System.out.print("ERROR: Cannot convert a scaling of String to int");
             }
