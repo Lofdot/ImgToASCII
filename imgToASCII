@@ -19,7 +19,7 @@ class imgToASCII{
 
     public static void main(String[] args){
     String readpath = "";
-    String writepath = "";
+    String writepath = "ASCII.txt";
     boolean file = false;
     boolean isURL = false;
     boolean destination = true;
@@ -48,7 +48,6 @@ class imgToASCII{
             if(ERROR == false){
             file = true;
             readpath = args[i+1];
-            writepath = setWritepath(readpath);
             System.out.println("Filepath set.");
             break;
             }
@@ -104,7 +103,6 @@ class imgToASCII{
             if(ERROR == false){
             isURL = true;
             readpath = args[i+1];
-            writepath = "ASCII.txt";
             System.out.println("URL set.");
             break;
             }
@@ -192,19 +190,6 @@ class imgToASCII{
         }
         is.close();
         os.close();
-    }
-
-    static String setWritepath(String readpath){
-        char[] rPath = readpath.toCharArray();
-        String newPath = "";
-        for(int i = 0; i < rPath.length; i++){
-            if(rPath[i] == '.'){
-                newPath += ".txt";
-                i = rPath.length;
-            }
-            else newPath += rPath[i];
-        }
-        return newPath;
     }
 
     static char[][] readFile(String filepath, int heightDivisor, int widthDivisor) throws NullPointerException{
