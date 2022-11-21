@@ -12,7 +12,8 @@ import javax.imageio.ImageIO;
 
 class imgToASCII{
 
-    static String DENSITY = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,^`'.";
+    static String DENSITY = ".'`^,:;Il!i><~+_-?][}{1)(/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+    static String inverse = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/()1{}[]?-_+~<>i!lI;:,^`'.";
     static String monad = " λ";
     static final int defaultHeightDivisor = 1;
     static final int defaultWidthDivisor = 1;
@@ -33,10 +34,11 @@ class imgToASCII{
     for(int i = 0; i < args.length; i++){
         switch (args[i]){
             case "-h":
-            System.out.println("Use -f [filepath] to convert an image into ASCII.");
-            System.out.println("Use -u [url] instead to convert an image from the web.");
+            System.out.println("Use -f '[filepath]' to convert an image into ASCII.");
+            System.out.println("Use -u '[url]' instead to convert an image from the web.");
             System.out.println("Optionally add -s [heightScale] [widhtScale] to scale the image down.");
-            System.out.println("Optionally add -p [filepath] to save the ASCII art at your desired destination (Automatically adds .txt file extension).");
+            System.out.println("Optionally add -p [filepath] to save the ASCII art at your desired destination.");
+            System.out.println("Optionally add -i to invert black and white colors");
             System.out.println("Optionally add -m to change the charset to lambda.");
             break;
             case "-f":
@@ -89,7 +91,6 @@ class imgToASCII{
             if(ERROR == false){
             destination = true;
             writepath = args[i+1];
-            writepath += ".txt";
             System.out.println("Writepath set.");
             break;
             }
@@ -106,7 +107,10 @@ class imgToASCII{
             System.out.println("URL set.");
             break;
             }
-
+            case "-i":
+            DENSITY = inverse;
+            System.out.println("Inverted colors.");
+            break;
         }
     }
                 if((ERROR == false && args.length < 0) || (ERROR == false && file == true)){
